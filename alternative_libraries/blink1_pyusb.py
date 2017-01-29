@@ -34,14 +34,40 @@ debug_rw = False
 
 class Blink1:
 
-    def __init__(self):
+    def __init__(self, unit=0):
         self.dev = None
+        self.unit = unit
         return self.find()
     
     def find(self):
-        self.dev = usb.core.find(idVendor=0x27b8, idProduct=0x01ed)
-        if( self.dev == None ): 
+        devs = usb.core.find(find_all=True, idVendor=0x27b8, idProduct=0x01ed)
+
+        #self.dev = usb.core.find(find_all=True, idVendor=0x27b8, idProduct=0x01ed)
+        #print len(self.dev)
+#        if( self.dev == None ): 
+#            return None
+
+#        else:
+#	    print self.dev
+
+        if devs == None:
+            # no devices found
             return None
+
+        else:
+            # we're given an iterable so convert to a list
+            list = []
+            for cfg in devs:
+                list.append(cfg)
+#                print cfg
+#                for i in cfg:
+#                    print i.bInterfaceNumber
+
+            if self.unit >= len(list):
+                print "No device at unit " + str(self.unit)
+                return
+
+            self.dev = list[self.unit]
 
         #print "kernel_driver_active:%i" % (self.dev.is_kernel_driver_active(0))
         if( self.dev.is_kernel_driver_active(0) ):
