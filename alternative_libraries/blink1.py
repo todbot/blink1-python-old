@@ -12,12 +12,12 @@ try:
     from blink1_pyusb import Blink1 as Blink1_pyusb
     use_pyusb = True
     #sys.modules['Blink1'] = blink1_pyusb
-    if debugimport: print "using blink1_pyusb"
+    print "using blink1_pyusb"
 except ImportError:
     try: 
         from blink1_ctypes import Blink1 as Blink1_ctypes
         #sys.modules['Blink1'] = blink1_ctypes
-        if debugimport: print "using blink1_ctypes" 
+        print "using blink1_ctypes" 
     except ImportError:
         print "couldn't load blink1_pyusb or blink1_ctypes"
         sys.exit(1)
@@ -32,13 +32,13 @@ class Blink1:
     and then proxies the unhandled getattribute methods to it.
     Other classes are to inherit from it.
     '''
-    def __init__(self):
+    def __init__(self, unit=0):
         '''
         Wrapper constructor.
         '''
         # wrap the object
         if use_pyusb : 
-            blink1 = Blink1_pyusb()
+            blink1 = Blink1_pyusb(unit)
         else : 
             blink1 = Blink1_ctypes()
         self._wrapped_obj = blink1
